@@ -3,14 +3,14 @@ package jdb;
 import java.io.IOException;
 import rx.Observable;
 
-import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 import jdb.config.JdbConfig;
 
 public class JServer {
+	private int pid;
+	private long port;
 	public JServer() {
-		
+		port = JdbConfig.SERVERPORT;
 	}
 
 	
@@ -29,24 +29,10 @@ public class JServer {
 	}
 	
 	public void init() {
-		Signal.handle(new Signal("HUP"), new SignalHandler() {
-
-			@Override
-			public void handle(Signal arg0) {
-				// do not nothing
-				
-			}
-			
-		});
-		Signal.handle(new Signal("PIPE"), new SignalHandler() {
-
-			@Override
-			public void handle(Signal arg0) {
-				// do not nothing
-				
-			}
-			
-		});
+		pid = Integer.valueOf(ManagementFactory
+				.getRuntimeMXBean()
+				.getName()
+				.split("@")[0]);
 		
 	}
 	
@@ -63,7 +49,6 @@ public class JServer {
 	public static void main(String[] args) {
 		JServer server = new JServer();
 		JServer.daemonize();
-		server.init();
 		
 		if (args.length != 0) {
 			if (args[0].equals("-v") ||
@@ -73,7 +58,7 @@ public class JServer {
 					args[0].equals("--help"))
 				JServer.usage();
 		}
-		
+		server.init();
 
 	}
 }
