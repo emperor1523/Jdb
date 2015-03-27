@@ -69,7 +69,7 @@ set CMD_LINE_ARGS=%$
 :execute
 @rem Setup the command line
 
-set CLASSPATH=%APP_HOME%\lib\Jdb.jar;%APP_HOME%\lib\rxjava-1.0.8.jar;%APP_HOME%\lib\rxjava-1.0.8.jar
+set CLASSPATH=%APP_HOME%\lib\Jdb.jar;%APP_HOME%\lib\rxjava-1.0.8.jar
 
 @rem Execute Jdb
 "%JAVA_EXE%" %DEFAULT_JVM_OPTS% %JAVA_OPTS% %JDB_OPTS%  -classpath "%CLASSPATH%" jdb.JServer %CMD_LINE_ARGS%
