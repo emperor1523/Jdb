@@ -3,16 +3,18 @@ package jdb;
 import java.io.IOException;
 import rx.Observable;
 
+import sun.misc.Signal;
+import sun.misc.SignalHandler;
+
 import jdb.config.JdbConfig;
 
 public class JServer {
-	public void init() {
+	public JServer() {
 		
 	}
+
 	
 	public static void version() {
-//		System.out.println("Jdb server v=" + 
-//						   JdbConfig.VERSION);
 		Observable.just("Jdb server v=" + 
 				   JdbConfig.VERSION)
 				   .subscribe(s -> System.out.println(s));
@@ -20,16 +22,47 @@ public class JServer {
 	}
 	
 	public static void usage() {
-//		System.err.println("Usage: -v or --version");
-//		System.err.println("       -h or --help");
 		Observable.just("Usage: -v or --version\n" + 
 				"       -h or --help")
 				   .subscribe(s -> System.out.println(s));
 		System.exit(0);
 	}
 	
+	public void init() {
+		Signal.handle(new Signal("HUP"), new SignalHandler() {
+
+			@Override
+			public void handle(Signal arg0) {
+				// do not nothing
+				
+			}
+			
+		});
+		Signal.handle(new Signal("PIPE"), new SignalHandler() {
+
+			@Override
+			public void handle(Signal arg0) {
+				// do not nothing
+				
+			}
+			
+		});
+		
+	}
+	
+	public static void daemonize() {
+		try {
+			System.in.close();
+			System.out.close();
+			System.err.close();
+		} catch (IOException e) {
+			System.exit(1);
+		}
+	}
+	
 	public static void main(String[] args) {
 		JServer server = new JServer();
+		JServer.daemonize();
 		server.init();
 		
 		if (args.length != 0) {
@@ -42,7 +75,5 @@ public class JServer {
 		}
 		
 
-		Observable.just("+OK")
-			.subscribe(s -> System.out.println(s));
 	}
 }
